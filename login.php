@@ -1,6 +1,6 @@
 <?php
 // Conexión a la base de datos
-$servername = "localhost";
+$servername = "10.0.2.2";
 $username = "root ";
 $password = "";
 $database = "bswl";

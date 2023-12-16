@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 val contrasena = URLEncoder.encode(params[1], "UTF-8")
 
                 // Reemplaza la URL con la ubicación de tu script PHP
-                val url = URL("http://localhost/login.php")
+                val url = URL("https://10.0.2.2/login.php")
                 val urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.requestMethod = "POST"
 

@@ -26,12 +26,19 @@ class InicioActivity : AppCompatActivity() {
             val jsonObject = JSONObject(datosUsuario)
             val usuarioId = jsonObject.getInt("usuario_id")
             val usuarioNick = jsonObject.getString("usuario_nick")
+
+
+            val mensajeDatos = "ID: $usuarioId\nUsuario: $usuarioNick\n"
+            tvDatosUsuario.text = mensajeDatos
+        }
+        if (datosContacto != null){
+            val jsonObject = JSONObject(datosContacto)
             val contactoNombre = jsonObject.getString("nombre")
             val contactoEmail = jsonObject.getString("email")
             val contactoNumero = jsonObject.getString("numero")
 
-            val mensajeDatos = "ID: $usuarioId\nUsuario: $usuarioNick\nNombre: $contactoNombre\nEmail: $contactoEmail\nNúmero: $contactoNumero"
-            tvDatosUsuario.text = mensajeDatos
+            val mensajeDatos2 = "Nombre: $contactoNombre\nEmail: $contactoEmail\nNúmero: $contactoNumero"
+            tvDatosContacto.text = mensajeDatos2
         }
     }
 }
