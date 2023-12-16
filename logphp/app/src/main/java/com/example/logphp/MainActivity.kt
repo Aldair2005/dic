@@ -1,12 +1,13 @@
 package com.example.logphp
 
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var etUsuario: EditText
     private lateinit var etContrasena: EditText
+    private lateinit var btnLogin: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,29 +26,32 @@ class MainActivity : AppCompatActivity() {
 
         etUsuario = findViewById(R.id.etUsuario)
         etContrasena = findViewById(R.id.etContrasena)
-        val btnLogin: Button = findViewById(R.id.btnLogin)
+        btnLogin = findViewById(R.id.btnLogin)
 
         btnLogin.setOnClickListener {
-            val usuario = etUsuario.text.toString()
+            val usuarioNick = etUsuario.text.toString()
             val contrasena = etContrasena.text.toString()
 
             // Ejecutar la tarea asíncrona para la autenticación
-            LoginTask().execute(usuario, contrasena)
+            LoginTask().execute(usuarioNick, contrasena)
         }
     }
 
     private inner class LoginTask : AsyncTask<String, Void, String>() {
         override fun doInBackground(vararg params: String): String {
             try {
-                val usuario = URLEncoder.encode(params[0], "UTF-8")
+                val usuarioNick = URLEncoder.encode(params[0], "UTF-8")
                 val contrasena = URLEncoder.encode(params[1], "UTF-8")
 
                 // Reemplaza la URL con la ubicación de tu script PHP
-                val url = URL("C:\\Users\\AMIDANIALDILEO\\AndroidStudioProjects/logl.php?usuario=$usuario&contrasena=$contrasena")
-
+                val url = URL("https://localhost/login.php")
                 val urlConnection = url.openConnection() as HttpURLConnection
-                val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                urlConnection.requestMethod = "POST"
 
+                val postData = "usuario=$usuarioNick&contrasena=$contrasena"
+                urlConnection.outputStream.use { it.write(postData.toByteArray()) }
+
+                val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
                 val result = StringBuilder()
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
@@ -61,8 +66,29 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: String) {
             // Manejar el resultado de la tarea asíncrona
-            Toast.makeText(applicationContext, result, Toast.LENGTH_SHORT).show()
+            if (result.startsWith("http")) {
+                // Parsear el JSON para obtener datos del usuario
+                val jsonObject = JSONObject(result)
+
+                // Redirigir a la InicioActivity y pasar el mensaje de bienvenida y los datos del usuario
+                val intent = Intent(applicationContext, InicioActivity::class.java)
+                intent.putExtra("mensaje_bienvenida", "Bienvenido!")
+                intent.putExtra("datos_usuario", jsonObject.toString())
+                startActivity(intent)
+            } else {
+                // Mostrar mensaje de error
+                Toast.makeText(applicationContext, result, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
+
+
+
+
+
+
+
+
+
 
