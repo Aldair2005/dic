@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textColor="@android:color/black"
-        android:layout_below="@id/tvDatosUsuario"/>
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="16dp"/>
 
 </RelativeLayout>
