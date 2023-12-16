@@ -1,40 +1,42 @@
 <?php
-session_start(); // Inicia la sesión (si no está iniciada)
+// Conexión a la base de datos
+$servername = "localhost";
+$username = "root ";
+$password = "";
+$database = "bswl";
 
-// Comprueba si se ha enviado el formulario de inicio de sesión
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Datos de tu base de datos
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "basw";
+$conn = new mysqli($servername, $username, $password, $database);
 
-    // Recoge los datos del formulario
-    $usernameInput = $_POST['username'];
-    $passwordInput = $_POST['password'];
-
-    // Conexión a la base de datos
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    if ($conn->connect_error) {
-        die("Error en la conexión a la base de datos: " . $conn->connect_error);
-    }
-
-    // Consulta SQL para verificar las credenciales
-    $sql = "SELECT * FROM usuario WHERE usuario_nick = '$usernameInput' AND contraseña = '$passwordInput'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows == 1) {
-        // Las credenciales son válidas, inicia la sesión y almacena el nombre de usuario
-        $_SESSION['username'] = $usernameInput;
-        header("Location: inicio.php"); // Redirige al usuario a la página de inicio
-        exit();
-    } else {
-        // Credenciales incorrectas, muestra un mensaje de error
-        $error_message = "Nombre de usuario o contraseña incorrecto.";
-    }
-
-    $conn->close();
+// Verificar la conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
 }
-?>
 
+// Recibir datos del usuario
+$usuarioNick = $_POST['usuario'];
+$contrasena = $_POST['contrasena'];
+
+// Consulta para verificar las credenciales del usuario
+$sql = "SELECT usuario_id, usuario_nick, nombre, email, numero FROM usuario INNER JOIN contacto ON usuario.usuario_id = contacto.usuario_id WHERE usuario_nick = '$usuarioNick' AND contraseña = '$contrasena'";
+$result = $conn->query($sql);
+
+// Verificar si se encontraron resultados
+if ($result->num_rows > 0) {
+    // Usuario autenticado correctamente
+    $row = $result->fetch_assoc();
+    $response = array(
+        'usuario_id' => $row['usuario_id'],
+        'usuario_nick' => $row['usuario_nick'],
+        'nombre' => $row['nombre'],
+        'email' => $row['email'],
+        'numero' => $row['numero']
+    );
+    echo json_encode($response);
+} else {
+    // Credenciales incorrectas
+    echo "Credenciales incorrectas";
+}
+
+// Cerrar la conexión a la base de datos
+$conn->close();
+?>
