@@ -13,7 +13,7 @@ class InicioActivity : AppCompatActivity() {
 
         val mensajeBienvenida = intent.getStringExtra("mensaje_bienvenida")
         val datosUsuario = intent.getStringExtra("datos_usuario")
-        val DatosContacto = intent.getStringExtra("datos_contacto")
+        val datosContacto = intent.getStringExtra("datos_contacto")
 
         val tvMensajeBienvenida = findViewById<TextView>(R.id.tvMensajeBienvenida)
         val tvDatosUsuario = findViewById<TextView>(R.id.tvDatosUsuario)

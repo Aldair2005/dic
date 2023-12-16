@@ -3,6 +3,7 @@ package com.example.logphp
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 val contrasena = URLEncoder.encode(params[1], "UTF-8")
 
                 // Reemplaza la URL con la ubicación de tu script PHP
-                val url = URL("https://localhost/login.php")
+                val url = URL("http://localhost/login.php")
                 val urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.requestMethod = "POST"
 
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: String) {
             // Manejar el resultado de la tarea asíncrona
-            if (result.startsWith("http")) {
+            if (result.startsWith("{")) {
                 // Parsear el JSON para obtener datos del usuario
                 val jsonObject = JSONObject(result)
 
@@ -74,6 +75,8 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, InicioActivity::class.java)
                 intent.putExtra("mensaje_bienvenida", "Bienvenido!")
                 intent.putExtra("datos_usuario", jsonObject.toString())
+                intent.putExtra("datos_contacto", jsonObject.toString())
+
                 startActivity(intent)
             } else {
                 // Mostrar mensaje de error
@@ -82,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
 
 
 
