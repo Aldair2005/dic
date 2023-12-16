@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     } else {
         // Credenciales incorrectas, muestra un mensaje de error
-        $error_message = "Nombre de usuario o contraseña incorrectos.";
+        $error_message = "Nombre de usuario o contraseña incorrecto.";
     }
 
     $conn->close();
